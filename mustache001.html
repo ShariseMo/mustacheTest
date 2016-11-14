@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>mustache练习完善</title>
+	<script type="text/javascript" src="./jquery-1.11.3-min.js"></script>
+	<script type="text/javascript" src="./mustache.min.js"></script>
+	<style type="text/css">
+		.clear{clear:both;}
+		#typeList ul{list-style-type:none;border:1px solid #ccc;border-radius:5px;padding:0;}
+		#typeList li{float:left;border-right:1px solid #ccc;padding:10px 20px;}
+		#typeList li:last-child{border-right:0;}
+		.active{background:#33A6F9;color:#fff;}
+	</style>
+</head>
+<body>
+	<div id="bookList">
+		<table border="1" cellspacing="0" cellpadding="10">
+			<tr>
+				<th>编号</th>
+				<th>书名</th>
+				<th>作者</th>
+				<th>价格</th>
+			</tr>
+		</table>
+	</div>
+
+	<!-- 分类图书 -->
+	<div id="typeList">
+		<ul>
+			<div class="clear"></div>
+		</ul>
+		<table id="contentLsit" border="1" cellspacing="0" cellpadding="10">
+			<thead>
+				<tr>
+					<th>编号</th>
+					<th>书名</th>
+					<th>作者</th>
+					<th>价格</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+	
+	<script type="text/template" id="book-list-template">
+		{{#.}}
+			<tr>
+				<td>{{bookNo}}</td>
+				<td>{{name}}</td>
+				<td>{{author}}</td>
+				<td>{{price}}</td>
+			</tr>
+		{{/.}}
+	</script>
+	
+	<script type="text/template" id="type-list-template">
+		{{#.}}
+			<li>{{type}}</li>
+		{{/.}}
+	</script>
+
+	<script type="text/template" id="content-list-template">
+		{{#.}}
+			<tr>
+				<td>{{bookNo}}</td>
+				<td>{{name}}</td>
+				<td>{{author}}</td>
+				<td>{{price}}</td>
+			</tr>
+		{{/.}}
+	</script>
+	<script type="text/javascript">
+		var bookListData = [
+			{
+				"name":"西游记",
+				"author":"吴承恩",
+				"bookNo":"M001",
+				"price":"20.00"
+			},
+			{
+				"name":"红楼梦",
+				"author":"曹雪芹",
+				"bookNo":"M002",
+				"price":"22.00"
+			},
+		];
+
+		var bookTypeData = [
+			{
+				"type":"名著",
+				"books":[
+					{
+						"name":"西游记",
+						"author":"吴承恩",
+						"bookNo":"M001",
+						"price":"20.00"
+					},
+					{
+						"name":"红楼梦",
+						"author":"曹雪芹",
+						"bookNo":"M002",
+						"price":"22.00"
+					}
+				]
+			},
+			{
+				"type":"卡通书",
+				"books":[
+					{
+						"name":"黑猫警长",
+						"author":"喵喵",
+						"bookNo":"K001",
+						"price":"10.00"
+					},
+					{
+						"name":"多拉A梦",
+						"author":"叮当",
+						"bookNo":"K002",
+						"price":"12.00"
+					}
+				]
+			}
+		];
+
+		var tBookList = $("#book-list-template").html();
+		Mustache.parse(tBookList);
+		$("#bookList table").append(Mustache.render(tBookList,bookListData));
+
+		var tTypeList = $("#type-list-template").html();
+		Mustache.parse(tTypeList);
+		$("#typeList ul").prepend(Mustache.render(tTypeList,bookTypeData));
+		$("#typeList ul li").eq(0).addClass("active");
+
+		var tContentList = $("#content-list-template").html();
+		Mustache.parse(tContentList);
+		$("#contentLsit tbody").html(Mustache.render(tContentList,bookTypeData[0]["books"]));
+		$("#typeList ul li").click(function(){
+			var idx = $(this).index();
+			$("#typeList ul li").eq(idx).addClass("active").siblings().removeClass("active");
+			$("#contentLsit tbody").html(Mustache.render(tContentList,bookTypeData[idx]['books']));
+
+		});
+
+	</script>
+</body>
+</html>
